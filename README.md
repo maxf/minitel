@@ -28,6 +28,9 @@ as HTML will allow using the minitel font and displaying double-size characters.
 
 ## Running the server:
 
+
+You should install the [Minitel font](https://www.dafont.com/minitel.font) first, then as usual:
+
 - `python -m venv venv`
 - `source venv/bin/activate`
 - `pip install -r requirements.txt`
