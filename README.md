@@ -9,13 +9,11 @@ To put the minitel in terminal mode, press `Fnct`-`T` followed by `V`.
 
 # Setup
 
-- `python -m venv venv`
-- `source venv/bin/activate`
-- `pip install -r requirements.txt`
+Install [Poetry](https://python-poetry.org/), then run `poetry install`.
 
 Connect your minitel and test with
 
-- `python max-test.py`
+`python max-test.py`
 
 
 # Developing

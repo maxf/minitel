@@ -7,9 +7,7 @@ minitel font and displaying double-size characters.
 
 ## Running the server:
 
-You should install the [Minitel font](https://www.dafont.com/minitel.font) first, then as usual:
+You should install the [Minitel font](https://www.dafont.com/minitel.font) first, then:
 
-- `python -m venv venv`
-- `source venv/bin/activate`
-- `pip install -r requirements.txt`
+- `poetry install`
 - `flask --app server run --debug`
