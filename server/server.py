@@ -2,8 +2,10 @@ from flask import Flask
 
 app = Flask(__name__)
 
+NB_ROWS = 25
+NB_COLS = 40
 
-screen = [[ "X" for col in range(80) ] for row in range(72)]
+screen = [[ "X" for col in range(NB_COLS) ] for row in range(NB_ROWS)]
 
 
 def char_as_html(char):
@@ -15,6 +17,35 @@ def row_as_html(row):
 def screen_as_html(screen):
     return "<table>" + ''.join([row_as_html(row) for row in screen]) + "</table>"
 
+
+def minitel_as_html(screen):
+    return f"""<!DOCTYPE html>
+    <html>
+      <head>
+        <title>Minitel</title>
+        <style type="text/css">
+          body {{
+            background: #555;
+            color: #fff;
+            font-family: Minitel;
+            font-size: 14px;
+          }}
+          table {{
+            border-collapse: collapse;
+          }}
+          th, td {{
+            padding: 0;
+          }}
+        </style>
+      </head>
+      <body>
+        <h1>Minitel</h1>
+        {screen_as_html(screen)}
+      </body>
+    </html>
+    """
+
+
 @app.route("/")
 def hello_world():
-    return screen_as_html(screen)
+    return minitel_as_html(screen)
