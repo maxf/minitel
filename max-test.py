@@ -1,6 +1,7 @@
-from minitel.Minitel import Minitel
+#from minitel.Minitel import Minitel
+import Minitel
 
-minitel = Minitel()
+minitel = Minitel.Minitel()
 
 vitesse = minitel.deviner_vitesse()
 print("vitesse", vitesse)
