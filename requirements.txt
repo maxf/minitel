@@ -1,0 +1,9 @@
+asgiref==3.7.2
+Django==4.2.2
+image==1.5.33
+Pillow==9.5.0
+-e git+ssh://git@github.com/zigazou/PyMinitel.git@8deca9b3700b946760c5397cfba6787bc5d6fe47#egg=PyMinitel
+pyserial==3.5
+six==1.16.0
+sqlparse==0.4.4
+typing_extensions==4.6.3
