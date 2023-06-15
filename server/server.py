@@ -22,21 +22,7 @@ def minitel_as_html(screen):
     return f"""<!DOCTYPE html>
     <html>
       <head>
-        <title>Minitel</title>
-        <style type="text/css">
-          body {{
-            background: #555;
-            color: #fff;
-            font-family: Minitel;
-            font-size: 14px;
-          }}
-          table {{
-            border-collapse: collapse;
-          }}
-          th, td {{
-            padding: 0;
-          }}
-        </style>
+        <link rel=stylesheet href="static/main.css" type="text/css">
       </head>
       <body>
         <h1>Minitel</h1>
