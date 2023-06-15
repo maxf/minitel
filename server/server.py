@@ -35,6 +35,8 @@ def minitel_as_html(screen):
       </head>
       <body>
         {screen_as_html(screen)}
+<script src="static/node_modules/eruda/eruda.js"></script>
+<script>eruda.init();</script>
       </body>
     </html>
     """
