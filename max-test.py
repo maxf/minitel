@@ -13,8 +13,9 @@ if (vitesse == -1):
 
 minitel.identifier()
 
-# ...
-# Utilisation de l’objet minitel
-# ...
+minitel.efface()
+minitel.envoyer("Hello")
+minitel.position(10,10)
+minitel.envoyer("world!")
 
 minitel.close()
