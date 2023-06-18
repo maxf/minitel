@@ -1,7 +1,17 @@
 blinker==1.6.2
+certifi==2023.5.7
+charset-normalizer==3.1.0
 click==8.1.3
 Flask==2.3.2
+flask-sock==0.6.0
+h11==0.14.0
+idna==3.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.3
+PyMinitel @ git+https://github.com/Zigazou/PyMinitel.git@001ffdd394d55cdb53a766b9245c3a5a488e672e
+requests==2.31.0
+simple-websocket==0.10.1
+urllib3==2.0.3
 Werkzeug==2.3.6
+wsproto==1.2.0
