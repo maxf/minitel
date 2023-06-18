@@ -1,6 +1,9 @@
 from flask import Flask, request
+from flask_sock import Sock
+import time
 
 app = Flask(__name__)
+sock = Sock(app)
 
 NB_ROWS = 25
 NB_COLS = 40
@@ -9,6 +12,17 @@ current_row = 0
 current_col = 0
 
 screen = []
+
+app.config['SOCK_SERVER_OPTIONS'] = {'ping_interval': 25}
+
+@sock.route('/ws')
+def websocket(ws):
+    while True:
+        # data = ws.receive()
+        # print(f"ws received {data}")
+        time.sleep(3)
+        ws.send(screen_as_html(screen))
+    ws.close(102, "that's all")
 
 def clear_screen():
     global screen
@@ -34,7 +48,11 @@ def minitel_as_html(screen):
         <link rel=stylesheet href="static/main.css" type="text/css">
       </head>
       <body>
-        {screen_as_html(screen)}
+        <p id=message>-</p>
+        <div id=screen>{screen_as_html(screen)}</div>
+        <script src="/static/main.js"></script>
+        <script src="/static/node_modules/eruda/eruda.js"></script>
+        <script>eruda.init();</script>
       </body>
     </html>
     """
@@ -59,11 +77,9 @@ def envoyer():
 def position():
     global current_col, current_row
     if request.form['relatif'] == 'False':
-        print('absolute')
         current_col = int(request.form['colonne'])
         current_row = int(request.form['ligne'])
     else:
-        print('relatif')
         current_col += int(request.form['colonne'])
         current_row += int(request.form['ligne'])
 
@@ -71,7 +87,6 @@ def position():
     current_col = min(current_col, NB_COLS-1)
     current_row = max(current_row, 0)
     current_row = min(current_row, NB_ROWS-1)
-    print("=========", current_col, current_row)
     return minitel_as_html(screen)
 
 
