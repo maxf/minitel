@@ -15,10 +15,5 @@ if (vitesse == -1):
 minitel.identifier()
 
 minitel.efface()
-minitel.position(0, 0)
-minitel.envoyer("Hello")
-time.sleep(4)
-minitel.position(10,10)
-minitel.envoyer("world!")
 
 minitel.close()
