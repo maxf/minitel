@@ -9,13 +9,25 @@ To put the minitel in terminal mode, press `Fnct`-`T` followed by `V`.
 
 # Setup
 
+## With poetry
+
+- `poetry install`
+- `poetry run flask --app server run --debug`
+
+## With pip
+
+For environments that don't support poetry, like Termux on Android
+
+
 - `python -m venv venv`
 - `source venv/bin/activate`
 - `pip install -r requirements.txt`
 
+# Running
+
 Connect your minitel and test with
 
-- `python max-test.py`
+- `poetry run max-test.py`
 
 
 # Developing
@@ -28,10 +40,17 @@ as HTML will allow using the minitel font and displaying double-size characters.
 
 ## Running the server:
 
+### With poetry
 
-You should install the [Minitel font](https://www.dafont.com/minitel.font) first, then as usual:
+- `poetry install`
+- `poetry run flask --app server run --debug`
+
+### With pip
+
+For environments that don't support poetry, like Termux on Android
 
 - `python -m venv venv`
 - `source venv/bin/activate`
-- `pip install -r requirements.txt`
+- `pip install -r requirements-frozen.txt`
 - `flask --app server run --debug`
+

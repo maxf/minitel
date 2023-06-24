@@ -1,4 +1,4 @@
-from PyMinitel import Minitel
+from emunitel import Minitel
 
 minitel = Minitel.Minitel()
 

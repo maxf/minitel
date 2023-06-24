@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "minitel"
+version = "0.1.0"
+description = ""
+authors = ["Max Froumentin <github@e97.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pyminitel = {git = "https://github.com/zigazou/PyMinitel.git"}
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
