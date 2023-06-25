@@ -11,6 +11,9 @@ NB_COLS = 40
 current_row = 0
 current_col = 0
 
+char_width = 1
+char_height = 1
+
 screen = []
 
 app.config['SOCK_SERVER_OPTIONS'] = {'ping_interval': 25}
@@ -22,7 +25,7 @@ def websocket(ws):
         # print(f"ws received {data}")
         time.sleep(3)
         ws.send(screen_as_html(screen))
-    ws.close(102, "that's all")
+    # ws.close(102, "that's all")
 
 def clear_screen():
     global screen
@@ -104,3 +107,8 @@ def position():
 def efface():
     clear_screen()
     return minitel_as_html(screen)
+
+@app.route("/taille", methods = ['POST'])
+def taille():
+    char_width = request.form['largeur']
+    char_height = request.form['hauteur']
