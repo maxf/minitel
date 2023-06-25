@@ -9,9 +9,14 @@ body {
   font-family: Minitel;
   font-size: 14px;
 }
-table {
-  border-collapse: collapse;
+
+text {
+  fill: #ddd
 }
+
 th, td {
   padding: 0;
+  border: 1px solid black;
+  width: 1.1em;
+  height: 1.3em;
 }

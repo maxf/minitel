@@ -26,19 +26,29 @@ def websocket(ws):
 
 def clear_screen():
     global screen
-    screen = [[ "." for col in range(NB_COLS) ] for row in range(NB_ROWS)]
+    screen = [[ " " for col in range(NB_COLS) ] for row in range(NB_ROWS)]
 
 clear_screen()
 
 
-def char_as_html(char):
-    return f"<td>{char}</td>"
-
-def row_as_html(row):
-    return "<tr>" + ''.join([char_as_html(char) for char in row]) + "</tr>"
-
 def screen_as_html(screen):
-    return "<table>" + ''.join([row_as_html(row) for row in screen]) + "</table>"
+    result = ""
+    for row in range(NB_ROWS):
+        for col in range(NB_COLS):
+            char = screen[row][col]
+            if char != "":
+                result = result + f"<text x={(col+1)*13} y={(row+1)*16}>{char}</text>"
+    return f"""
+      <svg width=1000 height=1000>
+        <g transform="translate(5, 8)">
+          <rect
+            x=6 y=-5
+            width={(NB_COLS+1)*13} height={(NB_ROWS+1)*16}
+            stroke=#000 stroke-width=2px fill=#555></rect>
+          {result}
+        </g>
+      </svg>
+    """
 
 
 def minitel_as_html(screen):
