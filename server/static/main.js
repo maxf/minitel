@@ -9,6 +9,13 @@ socket.onopen = function(e) {
 };
 
 socket.onmessage = function(event) {
+
+  // create a text element to draw in a CANVAS
+
+  event.data.row
+  event.data.column
+
+
   document.getElementById('screen').innerHTML = event.data;
 };
 

@@ -1,6 +1,7 @@
 from flask import Flask, request
 from flask_sock import Sock
 import time
+import json
 
 app = Flask(__name__)
 sock = Sock(app)
@@ -18,13 +19,19 @@ screen = []
 
 app.config['SOCK_SERVER_OPTIONS'] = {'ping_interval': 25}
 
+socket = None
+
 @sock.route('/ws')
-def websocket(ws):
-    while True:
+def open_websocket(ws):
+    global socket
+    socket = ws
+
+
+#    while True:
         # data = ws.receive()
         # print(f"ws received {data}")
-        time.sleep(3)
-        ws.send(screen_as_html(screen))
+#        time.sleep(3)
+#        ws.send(screen_as_html(screen))
     # ws.close(102, "that's all")
 
 def clear_screen():
@@ -71,9 +78,17 @@ def minitel_as_html(screen):
     """
 
 
+
 @app.route("/", methods = ['GET'])
 def hello_world():
     return minitel_as_html(screen)
+
+
+
+@app.route("/send", methods = ["GET"])
+def send():
+    socket.send(json.dumps(request.form))
+
 
 
 @app.route("/envoyer", methods = ['POST'])
