@@ -1,33 +1,27 @@
-import turtle
+import pygame as pg
+import os
 
 NB_ROWS = 25
 NB_COLS = 40
 
-# make screen object and
-# set screen mode to world
-sc = turtle.Screen()
-sc.mode('world')
+pg.init()
 
 class Minitel:
     def __init__(self):
-        turtle.setworldcoordinates(-3, 103, 103, -3)
-        self.t = turtle.Turtle()
-        self.t.hideturtle()
-        self._draw_frame()
-#        self._test_screen()
+        pg.init()
+        resolution = 1800, 1400
+        self.screen = pg.display.set_mode(resolution)
+        self.fg = 250, 240, 230
+        self.bg = 5, 5, 5
+        self.scale_x = 1
+        self.scale_y = 1
+        wincolor = 40, 40, 90
+        self.screen.fill(wincolor)
+        current_dir = os.path.abspath(__file__)
+        location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        self.font = pg.font.Font(f'{location}/Minitel.ttf', 40)
 
-    def _draw_frame(self):
-        self.t.speed(0)
-        self.t.width(3)
-        self.t.pendown()
-        self.t.forward(93.3)
-        self.t.left(90)
-        self.t.forward(89.6)
-        self.t.left(90)
-        self.t.forward(93.3)
-        self.t.left(90)
-        self.t.forward(89.6)
-        self.t.penup()
+        self._test_screen()
 
     def _test_screen(self):
         for row in range(1, NB_ROWS+1):
@@ -67,7 +61,16 @@ class Minitel:
             un objet Sequence, une chaîne de caractères ou unicode, une liste,
             un entier
         """
-        self.t.write(contenu, font=('minitel', 16, 'normal'))
+        ren = self.font.render(contenu, 0, self.fg, self.bg)
+
+        if self.scale_x != 1 or self.scale_y != 1:
+            ren = pg.transform.scale_by(ren, (self.scale_x, self.scale_y))
+
+        x = (self.current_col - 1) * 40 + 100
+        y = (self.current_row - 1) * 50 + 50
+
+        self.screen.blit(ren, (x, y))
+        pg.display.flip()
 
     def recevoir(self, bloque = False, attente = None):
         ...
@@ -104,9 +107,7 @@ class Minitel:
         """
         self.current_col = colonne
         self.current_row = ligne
-        x = (self.current_col - 1) * 2.3 + 0.7
-        y = (self.current_row - 1) * 3.5 + 5
-        self.t.setposition(x, y)
+
 
 
     def efface(self, portee = 'tout'):
@@ -114,4 +115,34 @@ class Minitel:
 
 
     def taille(self, largeur: int = 1, hauteur: int = 1):
-        ...
+        """Définit la taille des prochains caractères
+
+        Le Minitel est capable d’agrandir les caractères. Quatres tailles sont
+        disponibles :
+
+        - largeur = 1, hauteur = 1: taille normale
+        - largeur = 2, hauteur = 1: caractères deux fois plus larges
+        - largeur = 1, hauteur = 2: caractères deux fois plus hauts
+        - largeur = 2, hauteur = 2: caractères deux fois plus hauts et larges
+
+        Note:
+        Cette commande ne fonctionne qu’en mode Videotex.
+
+        Le positionnement avec des caractères deux fois plus hauts se fait par
+        rapport au bas du caractère.
+
+        :param largeur:
+            coefficiant multiplicateur de largeur (1 ou 2)
+        :type largeur:
+            un entier
+
+        :param hauteur:
+            coefficient multiplicateur de hauteur (1 ou 2)
+        :type hauteur:
+            un entier
+        """
+        assert largeur in [1, 2]
+        assert hauteur in [1, 2]
+
+        self.scale_x = largeur
+        self.scale_y = hauteur

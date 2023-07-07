@@ -11,6 +11,9 @@ pyminitel = {git = "https://github.com/zigazou/PyMinitel.git"}
 requests = "^2.31.0"
 
 
+[tool.poetry.group.dev.dependencies]
+pygame = "^2.5.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
