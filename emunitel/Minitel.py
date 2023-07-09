@@ -9,7 +9,7 @@ pg.init()
 class Minitel:
     def __init__(self):
         pg.init()
-        resolution = 1800, 1400
+        resolution = 2400, 1400
         self.screen = pg.display.set_mode(resolution)
         self.fg = 250, 240, 230
         self.bg = 5, 5, 5
@@ -21,9 +21,16 @@ class Minitel:
         location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         self.font = pg.font.Font(f'{location}/Minitel.ttf', 40)
 
-        self._test_screen()
+        # initial text position
+        self.current_col = 1
+        self.current_row = 1
 
-    def _test_screen(self):
+        pg.draw.rect(self.screen, (0,0,0), pg.Rect(100,50, 1610, 50*NB_ROWS))
+
+
+#        self.test_screen()
+
+    def test_screen(self):
         for row in range(1, NB_ROWS+1):
             for col in range(1, NB_COLS+1):
                 self.position(col, row)
@@ -50,6 +57,85 @@ class Minitel:
     def close(self):
         pass
 
+
+    def _envoyer_un_caractere(self, char):
+        ren = self.font.render(char, 0, self.fg, self.bg)
+
+        x = (self.current_col - 1) * 40 + 100
+        y = (self.current_row - 1) * 50 + 50
+
+        # when a double character won't fit, minitel resets
+        # the scale to 1
+        if self.scale_x == 2 and self.current_col == NB_COLS:
+            self.scale_x = 1
+
+        if self.scale_y == 2 and self.current_row == 1:
+            self.scale_x = 1
+            self.scale_y = 1
+
+        ren = pg.transform.scale_by(ren, (self.scale_x, self.scale_y))
+
+        if self.scale_y == 2:
+            y = y - 50
+
+        self.screen.blit(ren, (x, y))
+        pg.display.flip()
+
+        # Calculate the next cursor position
+
+        # NORMAL SIZE CHARS
+        if self.scale_x == 1 and self.scale_y == 1:
+            if self.current_col < NB_COLS:
+                self.current_col = self.current_col + 1
+            else:
+                self.current_col = 1
+                if self.current_row < NB_ROWS:
+                    self.current_row = self.current_row + 1
+                else:
+                    self.current_row = 1
+
+        # DOUBLE SIZE CHARS
+        if self.scale_x == 2 and self.scale_y == 2:
+            if self.current_col < NB_COLS-2:
+                self.current_col = self.current_col + 2
+            else:
+                self.current_col = 1
+                if self.current_row < NB_ROWS-2:
+                    self.current_row = self.current_row + 2
+                else:
+                    self.current_row = 1
+
+
+
+
+        # if self.scale_x != 1 or self.scale_y != 1:
+        #     ren = pg.transform.scale_by(ren, (self.scale_x, self.scale_y))
+        #     if self.scale_y == 2:
+        #         y = y - 50
+
+        # if self.scale_x == 1 and self.scale_x == 1:
+        #     if self.current_col == NB_COLS:
+        #         self.current_col = 1
+        #         if self.current_row == NB_ROWS:
+        #             self.current_row = 1
+        #         else:
+        #             self.current_row = self.current_row + 1
+        #     else:
+        #         self.current_col = self.current_col + 1
+
+        # if self.scale_x == 2 and self.scale_x == 2:
+        #     if self.current_col == NB_COLS:
+        #         self.current_col = 1
+        #         if self.current_row == NB_ROWS:
+        #             self.current_row = 1
+        #         else:
+        #             self.current_row = self.current_row + 2
+        #     else:
+        #         self.current_col = self.current_col + 2
+
+
+
+
     def envoyer(self, contenu):
         """Envoi de séquence de caractères
 
@@ -61,16 +147,8 @@ class Minitel:
             un objet Sequence, une chaîne de caractères ou unicode, une liste,
             un entier
         """
-        ren = self.font.render(contenu, 0, self.fg, self.bg)
-
-        if self.scale_x != 1 or self.scale_y != 1:
-            ren = pg.transform.scale_by(ren, (self.scale_x, self.scale_y))
-
-        x = (self.current_col - 1) * 40 + 100
-        y = (self.current_row - 1) * 50 + 50
-
-        self.screen.blit(ren, (x, y))
-        pg.display.flip()
+        for char in contenu:
+            self._envoyer_un_caractere(char)
 
     def recevoir(self, bloque = False, attente = None):
         ...
@@ -107,6 +185,9 @@ class Minitel:
         """
         self.current_col = colonne
         self.current_row = ligne
+
+        self.taille(1,1) # For some reason, position() resets the taille
+
 
 
 
