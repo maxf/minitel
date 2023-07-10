@@ -25,29 +25,34 @@ minitel.identifier()
 minitel.efface()
 
 #test_screen()
+minitel.envoyer("1234567890123456789012345678901234567890")
 
 
-minitel.position(1, 2)
+time.sleep(2)
+minitel.efface()
+
+# minitel.position(1, 10)
+# minitel.taille(1,2)
+# minitel.envoyer("123456789")
+
+
+minitel.position(1,5)
+minitel.taille(1,1)
+minitel.envoyer("123456789")
 minitel.taille(2,2)
-minitel.envoyer("1234567890")
-minitel.envoyer("1234567890")
-minitel.envoyer("1234567890")
-minitel.envoyer("1234567890")
-minitel.envoyer("1234567890")
+minitel.envoyer("12345")
 minitel.taille(1,1)
 minitel.envoyer("1234567890")
-# minitel.taille(2,2)
-# minitel.envoyer("12345")
+minitel.taille(2,2)
+minitel.envoyer("1234XYZT")
 
-# minitel.taille(1,1)
-# minitel.envoyer("123456789")
+# minitel.position(1,5)
 # minitel.taille(2,2)
-# minitel.envoyer("12345")
-# minitel.taille(1,1)
-# minitel.envoyer("1234567890")
+# minitel.envoyer('ABC');
+# minitel.taille(1,2)
+# minitel.envoyer('D');
 # minitel.taille(2,2)
-# minitel.envoyer("1234567")
-# #minitel.envoyer("1234567890123456789012345678901234567890")
+# minitel.envoyer('EFG');
 
 
 

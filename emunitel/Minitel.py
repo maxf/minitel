@@ -25,7 +25,7 @@ class Minitel:
         self.current_col = 1
         self.current_row = 1
 
-        pg.draw.rect(self.screen, (0,0,0), pg.Rect(100,50, 1610, 50*NB_ROWS))
+        pg.draw.rect(self.screen, (0,0,0), pg.Rect(100,50, 1600, 50*NB_ROWS))
 
 
 #        self.test_screen()
@@ -58,22 +58,32 @@ class Minitel:
         pass
 
 
+    def _pos_to_xy(self, pos):
+        return (
+            (pos[0] - 1)*40+100,
+            (pos[1] - 1)*50+50
+        )
+
+
+
     def _envoyer_un_caractere(self, char):
         ren = self.font.render(char, 0, self.fg, self.bg)
 
-        x = (self.current_col - 1) * 40 + 100
-        y = (self.current_row - 1) * 50 + 50
+        #x = (self.current_col - 1) * 40 + 100
+        #y = (self.current_row - 1) * 50 + 50
+        (x, y) = self._pos_to_xy((self.current_col, self.current_row))
 
         # when a double character won't fit, minitel resets
         # the scale to 1
+        actual_scale_x = self.scale_x
         if self.scale_x == 2 and self.current_col == NB_COLS:
-            self.scale_x = 1
+            actual_scale_x = 1
 
         if self.scale_y == 2 and self.current_row == 1:
             self.scale_x = 1
             self.scale_y = 1
 
-        ren = pg.transform.scale_by(ren, (self.scale_x, self.scale_y))
+        ren = pg.transform.scale_by(ren, (actual_scale_x, self.scale_y))
 
         if self.scale_y == 2:
             y = y - 50
@@ -83,7 +93,7 @@ class Minitel:
 
         # Calculate the next cursor position
 
-        # NORMAL SIZE CHARS
+        # NORMAL SIZE CHARS (1,1)
         if self.scale_x == 1 and self.scale_y == 1:
             if self.current_col < NB_COLS:
                 self.current_col = self.current_col + 1
@@ -94,10 +104,12 @@ class Minitel:
                 else:
                     self.current_row = 1
 
-        # DOUBLE SIZE CHARS
+        # DOUBLE SIZE CHARS (2,2)
         if self.scale_x == 2 and self.scale_y == 2:
-            if self.current_col < NB_COLS-2:
+            if self.current_col < NB_COLS-1:
                 self.current_col = self.current_col + 2
+            elif self.current_col == NB_COLS - 1:
+                self.current_col = self.current_col + 1
             else:
                 self.current_col = 1
                 if self.current_row < NB_ROWS-2:
@@ -105,6 +117,20 @@ class Minitel:
                 else:
                     self.current_row = 1
 
+        # DOUBLE HEIGHT CHARS (1,2)
+        if self.scale_x == 1 and self.scale_y == 2:
+            if self.current_col < NB_COLS:
+                self.current_col = self.current_col + 1
+            else:
+                self.current_col = 1
+                if self.current_row < NB_ROWS-2:
+                    self.current_row = self.current_row + 2
+                else:
+                    self.current_row = 1
+
+        # (newx, newy) = self._pos_to_xy((self.current_col, self.current_row))
+        #  pg.draw.rect(self.screen, (255,0,0), pg.Rect(newx,newy+200, 10, 10))
+        #  pg.display.flip()
 
 
 
