@@ -20,6 +20,7 @@ class Minitel:
         current_dir = os.path.abspath(__file__)
         location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         self.font = pg.font.Font(f'{location}/Minitel.ttf', 40)
+#        self.font = pg.font.Font(f'{location}/caracteres_semigraphiques.ttf', 80)
 
         # initial text position
         self.current_col = 1

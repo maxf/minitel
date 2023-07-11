@@ -25,26 +25,48 @@ minitel.identifier()
 minitel.efface()
 
 #test_screen()
-minitel.envoyer("1234567890123456789012345678901234567890")
 
 
-time.sleep(2)
-minitel.efface()
+minitel.position(1, 10)
+#minitel.envoyer("A")
+minitel.envoyer("\u006A\u006B")
+#minitel.envoyer("ABCDEFGHIJKLNOPQRSTUVWXYZ")
+
+# 0x1fb00, u1FB00
+
+# minitel.position(1, 11)
+# minitel.envoyer('XXXXXX')
+# minitel.semigraphique()
+# minitel.envoyer("_ b c d e f _ _")
+# minitel.semigraphique(False)
+# minitel.envoyer('XXXXXXX')
+
+# minitel.position(1, 12)
+# minitel.semigraphique(False)
+# minitel.envoyer("XXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+
+
+
+
+#minitel.semigraphique(actif = False)
+
+#time.sleep(2)
+#minitel.efface()
 
 # minitel.position(1, 10)
 # minitel.taille(1,2)
 # minitel.envoyer("123456789")
 
 
-minitel.position(1,5)
-minitel.taille(1,1)
-minitel.envoyer("123456789")
-minitel.taille(2,2)
-minitel.envoyer("12345")
-minitel.taille(1,1)
-minitel.envoyer("1234567890")
-minitel.taille(2,2)
-minitel.envoyer("1234XYZT")
+# minitel.position(1,5)
+# minitel.taille(1,1)
+# minitel.envoyer("123456789")
+# minitel.taille(2,2)
+# minitel.envoyer("12345")
+# minitel.taille(1,1)
+# minitel.envoyer("1234567890")
+# minitel.taille(2,2)
+# minitel.envoyer("1234XYZT")
 
 # minitel.position(1,5)
 # minitel.taille(2,2)
