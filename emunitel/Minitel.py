@@ -9,7 +9,7 @@ pg.init()
 class Minitel:
     def __init__(self):
         pg.init()
-        resolution = 2400, 1400
+        resolution = 1800, 1400
         self.screen = pg.display.set_mode(resolution)
         self.fg = 250, 240, 230
         self.bg = 5, 5, 5
@@ -218,7 +218,7 @@ class Minitel:
 
 
     def efface(self, portee = 'tout'):
-        ...
+        pg.draw.rect(self.screen, (0,0,0), pg.Rect(100,50, 1600, 50*NB_ROWS))
 
 
     def taille(self, largeur: int = 1, hauteur: int = 1):
