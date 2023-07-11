@@ -20,11 +20,11 @@ def send_to_minitel(news):
     time_now = datetime.now().strftime("%H:%M")
     minitel.position(35,1)
     minitel.envoyer(date_now)
-    minitel.position(36,2)
+    minitel.position(35,2)
     minitel.envoyer(time_now)
 
 
-    for line in range(0, 5):
+    for line in range(0, 6):
         minitel.position(1,3*line+5)
         minitel.envoyer(f"* {news[line]}")
 
@@ -34,7 +34,7 @@ def send_to_minitel(news):
 while True:
 
     r = requests.get('https://hacker-news.firebaseio.com/v0/topstories.json')
-    j = r.json()[0:5]
+    j = r.json()[0:6]
     news = []
 
     for news_id in j:
