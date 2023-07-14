@@ -15,12 +15,13 @@ class Minitel:
         self.bg = 5, 5, 5
         self.scale_x = 1
         self.scale_y = 1
+        self.semi_graphique = False
         wincolor = 40, 40, 90
         self.screen.fill(wincolor)
         current_dir = os.path.abspath(__file__)
         location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        self.font = pg.font.Font(f'{location}/Minitel.ttf', 40)
-#        self.font = pg.font.Font(f'{location}/caracteres_semigraphiques.ttf', 80)
+        self.normal_font = pg.font.Font(f'{location}/Minitel.ttf', 40)
+        self.graphic_font = pg.font.Font(f'{location}/caracteres_semigraphiques.ttf', 40)
 
         # initial text position
         self.current_col = 1
@@ -66,12 +67,57 @@ class Minitel:
         )
 
 
+    def semigraphique(self, actif = True):
+        """Passe en mode semi-graphique ou en mode alphabétique
+
+        :param actif:
+            True pour passer en mode semi-graphique, False pour revenir au
+            mode normal
+        :type actif:
+            un booléen
+        """
+        self.semi_graphique = actif
+
+        self.scale_x = 1 # cancels size changes even if actif is False
+        self.scale_y = 1
+
+
 
     def _envoyer_un_caractere(self, char):
-        ren = self.font.render(char, 0, self.fg, self.bg)
 
-        #x = (self.current_col - 1) * 40 + 100
-        #y = (self.current_row - 1) * 50 + 50
+        if self.semi_graphique:
+            font_to_use = self.graphic_font
+            self.scale_x = 1
+            self.scale_y = 1
+
+            # Mapping ascii characters sent to the minitel
+            # to the matching graphical characters in the Unicode-compliant font
+            if char == ' ':
+                font_to_use = self.normal_font
+            elif char == '5':
+                # The font we use doesn't have the character for this symbol
+                # Minitel renders it as a left hand-side 1x3 bar
+                char = 'X'
+            elif char >= '!' and char <= '4':
+                char = chr(0x1fb00 - ord('!') + ord(char))
+            elif char >= '6' and char <= 'I':
+                char = chr(0x1fb00 - ord('!') - 1 + ord(char))
+            elif char == 'J':
+                # The font we use doesn't have the character for this symbol
+                # Minitel renders it as a right hand-side 1x3 bar
+                char = 'X'
+            elif char >= 'K' and char <= '^':
+                char = chr(0x1fb00 - ord('!') - 2 + ord(char))
+            elif char == '_':
+                # The font we use doesn't have the character for this symbol
+                # Minitel renders it as a 3x3 block
+                char = 'X'
+
+        else:
+            font_to_use = self.normal_font
+
+        ren = font_to_use.render(char, 0, self.fg, self.bg)
+
         (x, y) = self._pos_to_xy((self.current_col, self.current_row))
 
         # when a double character won't fit, minitel resets
@@ -214,7 +260,7 @@ class Minitel:
         self.current_row = ligne
 
         self.taille(1,1) # For some reason, position() resets the taille
-
+        self.semigraphique(False) # and the character set
 
 
 
@@ -252,5 +298,137 @@ class Minitel:
         assert largeur in [1, 2]
         assert hauteur in [1, 2]
 
-        self.scale_x = largeur
-        self.scale_y = hauteur
+        if self.semi_graphique:
+            self.scale_x = 1
+            self.scale_y = 1
+        else:
+            self.scale_x = largeur
+            self.scale_y = hauteur
+
+
+#########################
+# Caracteres semigraphiques
+
+# !  🬀
+#
+# " 🬁
+#
+# # 🬂
+#
+# $ 🬃
+#
+# % 🬄
+#
+# & 🬅
+#
+# ' 🬆
+#
+# ( 🬇
+#
+# ) 🬈
+#
+# * 🬉
+#
+# + 🬊
+#
+# , 🬋
+#
+# - 🬌
+#
+# . 🬍
+#
+# / 🬎
+#
+# 0 🬏
+#
+# 1 🬐
+#
+# 2 🬑
+#
+# 3 🬒
+#
+# 4 🬓
+#
+# 5 No unicode codepoint. Minitel renders as a left hand-side 1x3 bar
+#
+# 6 🬔
+#
+# 7 🬕
+#
+# 8 🬖
+#
+# 9 🬗
+#
+# : 🬘
+#
+# ; 🬙
+#
+# < 🬚
+#
+# = 🬛
+#
+# > 🬜
+#
+# ?  🬝
+#
+# @ 🬞
+#
+# A 🬟
+#
+# B 🬠
+#
+# C 🬡
+#
+# D 🬢
+#
+# E 🬣
+#
+# F 🬤
+#
+# G 🬥
+#
+# H 🬦
+#
+# I 🬧
+#
+# J No unicode codepoint. Minitel renders as right hand-side 1x3 bar
+#
+# K 🬨
+#
+# L 🬩
+#
+# M 🬪
+#
+# N 🬫
+#
+# O 🬬
+#
+# P 🬭
+#
+# Q 🬮
+#
+# R 🬯
+#
+# S 🬰
+#
+# T 🬱
+#
+# U 🬲
+#
+# V 🬳
+#
+# W 🬴
+#
+# X 🬵
+#
+# Y 🬶
+#
+# Z 🬷
+#
+# [ 🬸
+#
+# \ 🬹
+#
+# ] 🬺
+#
+# 0x1fb3b ^  🬻
