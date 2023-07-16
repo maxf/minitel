@@ -135,6 +135,9 @@ class Minitel:
         if self.scale_y == 2:
             y = y - 50
 
+        if self.semi_graphique:
+            ren = pg.transform.scale_by(ren, (1.7, 1.3))
+
         self.screen.blit(ren, (x, y))
         pg.display.flip()
 
@@ -431,4 +434,5 @@ class Minitel:
 #
 # ] 🬺
 #
-# 0x1fb3b ^  🬻
+# ^  🬻
+# _ No unicode codepoint. Minitel renders as a 3x3 block
