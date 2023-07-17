@@ -95,23 +95,17 @@ class Minitel:
             if char == ' ':
                 font_to_use = self.normal_font
             elif char == '5':
-                # The font we use doesn't have the character for this symbol
-                # Minitel renders it as a left hand-side 1x3 bar
-                char = 'X'
+                char = chr(0x1fbce)
             elif char >= '!' and char <= '4':
                 char = chr(0x1fb00 - ord('!') + ord(char))
             elif char >= '6' and char <= 'I':
                 char = chr(0x1fb00 - ord('!') - 1 + ord(char))
             elif char == 'J':
-                # The font we use doesn't have the character for this symbol
-                # Minitel renders it as a right hand-side 1x3 bar
-                char = 'X'
+                char = chr(0x1fbcd)
             elif char >= 'K' and char <= '^':
                 char = chr(0x1fb00 - ord('!') - 2 + ord(char))
             elif char == '_':
-                # The font we use doesn't have the character for this symbol
-                # Minitel renders it as a 3x3 block
-                char = 'X'
+                char = chr(0x1fbcb)
 
         else:
             font_to_use = self.normal_font

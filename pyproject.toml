@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 pyminitel = {git = "https://github.com/zigazou/PyMinitel.git"}
 requests = "^2.31.0"
+pillow = "^10.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
