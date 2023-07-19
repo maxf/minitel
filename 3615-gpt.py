@@ -1,5 +1,6 @@
-#from minitel import Minitel
-from emunitel import Minitel
+from minitel import Minitel
+from minitel.Sequence import Sequence
+#from emunitel import Minitel
 from PIL import Image
 
 import time
@@ -87,6 +88,31 @@ for row in range(4, 14):
     minitel.position(25, row-2)
     minitel.semigraphique()
     minitel.envoyer(lines[row-4])
+
+minitel.position(2,10)
+minitel.curseur(True)
+
+KEY_ENVOI = [19,65]
+KEY_CORRECTION = [19,71]
+
+
+input_string = []
+input = Sequence()
+while True:
+    input = minitel.recevoir_sequence(True, None)
+    if input.valeurs == KEY_CORRECTION:
+        minitel.position(-1, 0, relatif=True)
+        minitel.envoyer(' ')
+        minitel.position(-1, 0, relatif=True)
+        input_string = input_string[:-1]
+    elif input.valeurs == KEY_ENVOI:
+        break
+    else:
+        input_string += input.valeurs
+
+    print(input.valeurs, '->', input_string)
+
+print('over', input_string)
 
 time.sleep(200)
 minitel.close()
