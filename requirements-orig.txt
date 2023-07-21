@@ -1,2 +1,0 @@
-git+https://github.com/Zigazou/PyMinitel.git
-requests
