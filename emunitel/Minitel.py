@@ -220,8 +220,40 @@ class Minitel:
         for char in contenu:
             self._envoyer_un_caractere(char)
 
-    def recevoir(self, bloque = False, attente = None):
-        ...
+    def recevoir_sequence(self,bloque = True, attente=None):
+        """Lit une séquence en provenance du Minitel
+
+        Retourne un objet Sequence reçu depuis le Minitel. Cette fonction
+        analyse les envois du Minitel pour en faire une séquence consistante
+        du point de vue du Minitel. Par exemple, si le Minitel envoie un
+        caractère SS2, SEP ou ESC, celui-ci ne fait qu’annoncer une suite de
+        caractères désignant un résultat ou un caractère non existant dans la
+        norme ASCII. Par contre, le nombre de caractères pouvant être reçus
+        après des caractères spéciaux est normalisé. Cela permet de savoir
+        exactement le nombre de caractères qui vont constituer la séquence.
+
+        C’est cette méthode qui doit être utilisée plutôt que la méthode
+        recevoir lorsqu’on dialogue avec le Minitel.
+
+        :param bloque:
+            True pour attendre une séquence s’il n’y en a pas dans la
+            file d’attente de réception. False pour ne pas attendre et
+            retourner immédiatement.
+        :type bloque:
+            un booléen
+
+        :param attente:
+            attente en secondes, valeurs en dessous de la seconde
+            acceptées. Valide uniquement en mode bloque = True
+            Si attente = None et bloque = True, alors on attend
+            indéfiniment qu'un caractère arrive.
+        :type attente:
+            un entier, ou None
+
+        :returns:
+            un objet Sequence
+        """
+
 
     def position(self, colonne, ligne, relatif = False):
         """Définit la position du curseur du Minitel
