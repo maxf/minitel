@@ -1,6 +1,6 @@
-from minitel import Minitel
+#from minitel import Minitel
 from minitel.Sequence import Sequence
-#from emunitel import Minitel
+from emunitel import Minitel
 from PIL import Image
 import os
 import openai
@@ -44,11 +44,11 @@ vitesse = minitel.deviner_vitesse()
 minitel.deviner_vitesse()
 minitel.identifier()
 minitel.definir_vitesse(1200)
-minitel.definir_mode('VIDEOTEX')
-minitel.configurer_clavier(etendu = True, curseur = False, minuscule = True)
-minitel.echo(False)
+#minitel.definir_mode('VIDEOTEX')
+#minitel.configurer_clavier(etendu = True, curseur = False, minuscule = True)
+#minitel.echo(False)
 minitel.efface()
-minitel.curseur(False)
+#minitel.curseur(False)
 
 
 
@@ -60,7 +60,7 @@ def pixel(col, row):
 
 def button(col, row, text):
     minitel.position(col, row)
-    minitel.effet(inversion=True)
+ #   minitel.effet(inversion=True)
     minitel.envoyer(f' {text} ')
 
 
@@ -75,22 +75,22 @@ def wait_for(keycode):
 def require_input(col, row):
     # Input field
     minitel.position(col, row)
-    minitel.envoyer(".......................................")
+    minitel.envoyer("Bonjour ChatGPT, ca va?................")
 
     minitel.position(col, row + 2)
-    minitel.envoyer("obtenir la réponse")
+    minitel.envoyer("Tapez Envoi pour obtenir la réponse")
 
-    button(col+20, row+2, 'Envoi')
+#    button(col+20, row+2, 'Envoi')
 
     minitel.position(col, row)
-    minitel.curseur(True)
-    minitel.echo(True)
-
+#    minitel.curseur(True)
+#    minitel.echo(True)
 
     input_string = []
     input = Sequence()
     while True:
         input = minitel.recevoir_sequence(True, None)
+        time.sleep(300)
         if input.valeurs == KEY_CORRECTION:
             minitel.position(-1, 0, relatif=True)
             minitel.envoyer('.')
@@ -189,6 +189,9 @@ def main():
 
         user_input = require_input(2, 15)
         print('user typed:', user_input)
+
+        return
+
         out = ask_gpt(user_input)
 
         minitel.position(0, 20)
@@ -210,10 +213,11 @@ def main():
         minitel.position(2, 24)
         minitel.envoyer("Revenir à la page précédente:")
         button(33,24,'Retour')
-        minitel.curseur(False)
+#        minitel.curseur(False)
         wait_for(KEY_RETOUR)
 
 
 
 
 main()
+time.sleep(200)
