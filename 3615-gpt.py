@@ -23,7 +23,8 @@ def ask_gpt(prompt):
         ],
         temperature=0,
     )
-    return response['choices'][0]['message']['content'].replace('\n', ' ')
+
+    return response['choices'][0]['message']['content'].split('\n')
 
 
 #import sys
@@ -86,8 +87,6 @@ def require_input(col, row):
     minitel.echo(True)
 
 
-
-
     input_string = []
     input = Sequence()
     while True:
@@ -103,6 +102,7 @@ def require_input(col, row):
             input_string += input.valeurs
             print('input', input.valeurs)
 
+    minitel.efface()
     return ''.join(list(map(chr, input_string[5:])))
 
 
@@ -175,35 +175,45 @@ def envoyer_lignes(lignes, col, row):
 
 #############################
 
-while True:
-    minitel.efface()
-    minitel.position(2, 3)
-    minitel.taille(2,2)
-    minitel.envoyer("3615 GPT")
 
-    show_logo()
+def main():
+    while True:
+        minitel.efface()
+        time.sleep(5)
 
-    user_input = require_input(2, 15)
-    print('user typed', user_input)
+        minitel.position(2, 3)
+        minitel.taille(2,2)
+        minitel.envoyer("3615 GPT")
 
-    out = ask_gpt(user_input)
+        show_logo()
 
-    minitel.position(0, 20)
+        user_input = require_input(2, 15)
+        print('user typed:', user_input)
+        out = ask_gpt(user_input)
 
-    minitel.efface()
-    minitel.position(2, 3)
-    minitel.taille(2,2)
-    minitel.envoyer("3615 GPT")
-    minitel.position(2, 6)
-    minitel.envoyer(out)
+        minitel.position(0, 20)
 
-    minitel.position(2, 24)
-    minitel.envoyer("Revenir à la page précédente:")
-    button(33,24,'Retour')
-    minitel.curseur(False)
-    wait_for(KEY_RETOUR)
+        minitel.efface()
+        minitel.position(2, 3)
+        minitel.taille(2,2)
+        minitel.envoyer("3615 GPT")
+
+        minitel.position(1, 6)
+
+        for ligne in out:
+            minitel.envoyer(ligne)
+            minitel.position(0, len(ligne) // 40 + 1, relatif=True)
+            minitel.debut_ligne()
+
+        #    minitel.envoyer(out)
+
+        minitel.position(2, 24)
+        minitel.envoyer("Revenir à la page précédente:")
+        button(33,24,'Retour')
+        minitel.curseur(False)
+        wait_for(KEY_RETOUR)
 
 
 
-time.sleep(200)
-minitel.close()
+
+main()
