@@ -44,4 +44,11 @@ Pour la connection à ChatGPT, j'utilise la librairie python fournie par OpenAI 
 
 Et voilà ce que ca donne:
 
-<p align="center"><iframe width="600" height="1067" src="https://www.youtube.com/embed/4mqJF_qJgYU" title="3615 GPT" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></p>
+<p align="center">
+    <a href="./ecran0.png"><img src="./ecran0.png" height="270" alt="capture d'écran de l'émulateur"/></a>
+    <a href="./ecran1.png"><img src="./ecran1.png" height="270" alt="capture d'écran de l'émulateur"/></a>
+    <a href="./ecran2.png"><img src="./ecran2.png" height="270" alt="capture d'écran de l'émulateur"/></a>
+</p>
+
+
+<p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/bjgSRb4fNNs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></p>
