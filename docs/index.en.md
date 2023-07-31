@@ -1,6 +1,6 @@
 # 3615 GPT
 
-par [maxf](https://github.com/maxf/)
+by Max F ([github](https://github.com/maxf/), [mastodon](https://mastodon.social/@maxf))
 
 - [Version française](.)
 - [demo](#demo)
