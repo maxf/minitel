@@ -1,8 +1,10 @@
 # 3615 GPT
 
-[Version française](.)
+par [maxf](https://github.com/maxf/)
 
-To the [demo](#demo)
+- [Version française](.)
+- [demo](#demo)
+- Code: [maxf/minitel](https://github.com/maxf/minitel)
 
 
 <p align="center"><img src="./minitel.jpg" width="600" alt="picture of a minitel"/></p>

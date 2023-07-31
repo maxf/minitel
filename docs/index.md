@@ -1,8 +1,11 @@
 # 3615 GPT
 
-[English version](index.en.md)
+by [maxf](https://github.com/maxf/)
 
-Aller directement à la [démo](#demo)
+- [English version](index.en.md)
+- [démo](#demo)
+- Code: [maxf/minitel](https://github.com/maxf/minitel)
+
 
 <p align="center"><img src="./minitel.jpg" width="600" alt="photo d'un minitel"/></p>
 
@@ -54,7 +57,3 @@ Et voilà ce que ca donne:
 
 
 <p align="center"><iframe width="560" height="315" src="https://www.youtube.com/embed/bjgSRb4fNNs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></p>
-
-## Le code
-
-Tout est sur: [maxf/minitel](https://github.com/maxf/minutel)
