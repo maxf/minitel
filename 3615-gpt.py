@@ -14,15 +14,21 @@ LANG='en'
 strings = {
     "fr": {
         "preprompt": "Tu es un gentil assistant",
-        "send": "Pour envoyer la commande:",
+        "send": "Tapez votre commande, puis ",
         "next": "Page suivante:",
         "back": "Revenir au début:",
+        "intro": "Interrogez ChatGPT",
+        "intro2": "sur votre Minitel!",
+        "tagline": "ChatGPT sur votre Minitel",
     },
     "en": {
         "preprompt": "You are a kind assistant",
-        "send": "Type your command, then press: ",
+        "send": "Type your command, then press ",
         "next": "Next page:",
         "back": "To go back:",
+        "intro": "Talk to ChatGPT",
+        "intro2": "on your Minitel!",
+        "tagline": "ChatGPT on your Minitel",
     }
 }
 
@@ -92,7 +98,7 @@ def wait_for(keycode):
 def require_input(col, row):
     # Input field
     minitel.position(col, row)
-    minitel.envoyer(".......................................")
+    minitel.envoyer("........................................")
 
     minitel.position(col, row + 2)
     minitel.envoyer(strings[LANG]["send"])
@@ -193,43 +199,54 @@ def envoyer_lignes(lignes, col, row):
 
 
 def main():
+    minitel.efface()
+
+    minitel.position(2, 3)
+    minitel.taille(2,2)
+    minitel.envoyer("3615 GPT")
+
+    show_logo()
+
+    minitel.position(2, 11)
+    minitel.taille(1,2)
+    minitel.envoyer(strings[LANG]["intro"])
+    minitel.position(2, 13)
+    minitel.taille(1,2)
+    minitel.envoyer(strings[LANG]["intro2"])
+
+
     while True:
-        minitel.efface()
-        time.sleep(5)
-
-        minitel.position(2, 3)
-        minitel.taille(2,2)
-        minitel.envoyer("3615 GPT")
-
-        show_logo()
-
-        user_input = require_input(2, 15)
+        user_input = require_input(1, 23)
         print('user typed:', user_input)
 
         out = ask_gpt(user_input)
 
         minitel.efface()
-        minitel.position(1, 3)
+        minitel.position(1, 2)
         minitel.taille(2,2)
         minitel.envoyer("3615 GPT")
+        minitel.position(1, 3)
+        minitel.envoyer(strings[LANG]["tagline"])
 
-        position_row = 5
+        position_row = 6
 
         minitel.position(1, position_row)
         for ligne in out:
             minitel.envoyer(ligne)
             position_row = position_row + len(ligne) // 40 + 1
 
-            if position_row > 22:
+            if position_row > 21:
                 minitel.position(2, 24)
                 minitel.envoyer(strings[LANG]["next"])
                 button(3 + len(strings[LANG]["next"]),24,'Suite')
                 minitel.curseur(False)
                 wait_for(KEY_SUITE)
                 minitel.efface()
-                minitel.position(2, 3)
+                minitel.position(1, 2)
                 minitel.taille(2,2)
                 minitel.envoyer("3615 GPT")
+                minitel.position(1, 3)
+                minitel.envoyer(strings[LANG]["tagline"])
                 position_row = 6
 
 
@@ -238,11 +255,13 @@ def main():
 
         #    minitel.envoyer(out)
 
-        minitel.position(2, 24)
-        minitel.envoyer(strings[LANG]["back"])
-        button(3 + len(strings[LANG]["back"]),24,'Retour')
-        minitel.curseur(False)
-        wait_for(KEY_RETOUR)
+
+#
+#        minitel.position(2, 24)
+#        minitel.envoyer(strings[LANG]["back"])
+#        button(3 + len(strings[LANG]["back"]),24,'Retour')
+#        minitel.curseur(False)
+#        wait_for(KEY_RETOUR)
 
 
 
