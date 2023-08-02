@@ -20,3 +20,10 @@ OPENAI_API_KEY=abcdef01239wskdfo338y poetry run python 3615-gpt.py
 ```
 
 and the intro page should display on your Minitel.
+
+
+
+
+All files Copyright 2023 Max Froumentin unless noted.
+The original code in this repository is licenced under the
+[GNU General Public Licence](./COPYING.txt).
