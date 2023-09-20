@@ -39,4 +39,4 @@ Here's the result:
 
 ## Code
 
-Everything's at [maxf/minitel](https://github.com/maxf/minutel)
+Everything's at [maxf/minitel](https://github.com/maxf/minitel)
