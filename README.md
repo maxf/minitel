@@ -22,6 +22,18 @@ OPENAI_API_KEY=abcdef01239wskdfo338y poetry run python 3615-gpt.py
 and the intro page should display on your Minitel.
 
 
+# Running it on a server, with a minitel as the ssh client
+
+(as provided by the [Minitel+ESP32](https://hackaday.io/project/180473-minitel-esp32) dongle)
+
+The Minitel+ESP32 dongle provides a way to turn a minitel into a ssh client. Therefore 3615-chatgpt could run on a server, accessible by ssh'ing to it. In order to do so, change your ssh server config and add:
+
+```
+ForceCommand /your/folder/path/minitel/3615-gpt-curses.py
+```
+
+now when your minitel connects to your ssh server, 3615-gpt-curses is run and offers the same service as if you're using a cable to your minitel.
+
 
 
 Copyright 2023 Max Froumentin
