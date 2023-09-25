@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from PIL import Image
 import os
 import openai
@@ -50,7 +52,7 @@ def ask_gpt(prompt):
     return response['choices'][0]['message']['content'].split('\n')
 
 
-im = Image.open("chatgpt-logo-pixellated-1-to-1.png")
+# im = Image.open("chatgpt-logo-pixellated-1-to-1.png")
 
 NB_ROWS = 24
 NB_COLS = 40
@@ -59,6 +61,8 @@ KEY_CORRECTION = [19, 71]
 KEY_RETOUR = [19, 66]
 KEY_SUITE = [19, 72]
 
+
+curses.setupterm(term="vt100")
 stdscr = curses.initscr()  # initialise curses
 # curses.noecho()  # don't echo incoming characters
 curses.cbreak()  # don't wait for Enter to handle keypresses
@@ -71,7 +75,7 @@ stdscr.keypad(True)  # automatically decode special keys into constants
 # minitel.curseur(False)
 
 
-print(im.format, im.size, im.mode)
+# print(im.format, im.size, im.mode)
 # print(im.getpixel((2,2)))
 
 
