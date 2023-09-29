@@ -61,7 +61,6 @@ curses.setupterm(term="vt100")
 
 
 
-
 # minitel.efface()
 # minitel.curseur(False)
 
@@ -79,12 +78,10 @@ def button(stdscr: Window, row: int, col: int, text: str):
     stdscr.refresh()
 
 
-def wait_for(keycode):
-    input = Sequence()
-    while True:
-        input = minitel.recevoir_sequence(True, None)
-        if input.valeurs == keycode:
-            return
+def wait_for(stdscr, keycode):
+    input: str = ""
+    while input != keycode:
+        input = stdscr.getkey()
 
 
 def require_input(stdscr: Window, row: int, col: int):
@@ -195,7 +192,6 @@ def main(stdscr: Window):
     stdscr.keypad(True)  # automatically decode special keys into constants
 
     stdscr.clear()
-
     stdscr.addstr(2, 1, "3615 GPT")
 
 #    show_logo()
@@ -212,37 +208,29 @@ def main(stdscr: Window):
             return
 
 
-        #        out = ask_gpt(user_input)
+        # out: List[str] = ask_gpt(user_input)
+        out: List[str] = ["Le Minitel (pour « Médium interactif par numérisation d'information téléphonique ») est un type de terminal informatique destiné à la connexion au service français de Vidéotex baptisé Télétel, commercialement exploité en France entre 1980 et 2012. Donnant accès à des services variés préfigurant ceux du futur Internet, et utilisant pour cela le réseau français Transpac qui lui-même préfigurait la future infrastructure de transmission d'Internet, il a hissé la France au premier plan de la télématique mondiale grâce au premier service au monde de fourniture gratuite ou payante d’informations télématiques. Il fut un succès considérable et resta longtemps en usage, y compris en concurrence d’Internet.", "Par métonymie, le mot « Minitel » a fini par désigner l'ensemble du service Vidéotex en France ainsi que les éléments de réseau (concentrateurs, points d'accès) destinés à rendre ce service. "]
 
-        #stdscr.clear()
-        #        stdscr.addstr(1, 0, "3615 GPT")
 
-        # minitel.position(1, 2)
-        # minitel.taille(2, 2)
-        # minitel.envoyer("3615 GPT")
-        # minitel.position(1, 3)
-        # minitel.envoyer(strings["tagline"])
+        stdscr.clear()
+        stdscr.addstr(0, 1, "3615 GPT")
+        stdscr.addstr(2, 1, strings["tagline"])
 
-        # position_row = 6
+        position_row = 6
 
-        # minitel.position(1, position_row)
-        # for ligne in out:
-        #     minitel.envoyer(ligne)
-        #     position_row = position_row + len(ligne) // 40 + 1
+        for ligne in out:
+            stdscr.addstr(position_row, 1, ligne)
+            position_row = position_row + len(ligne) // 40 + 1
 
-        #     if position_row > 21:
-        #         minitel.position(2, 24)
-        #         minitel.envoyer(strings["next"])
-        #         button(3 + len(strings["next"]), 24, 'Suite')
+            if position_row > 21:
+                stdscr.addstr(23, 1, strings["next"])
+                button(stdscr, 24, 3 + len(strings["next"]), 'Suite')
         #         minitel.curseur(False)
-        #         wait_for(KEY_SUITE)
-        #         minitel.efface()
-        #         minitel.position(1, 2)
-        #         minitel.taille(2, 2)
-        #         minitel.envoyer("3615 GPT")
-        #         minitel.position(1, 3)
-        #         minitel.envoyer(strings["tagline"])
-        #         position_row = 6
+                wait_for(stdscr, "S")
+                stdscr.clear()
+                stdscr.addstr(1, 1, "3615 GPT")
+                stdscr.addstr(3, 1, strings["tagline"])
+                position_row = 6
 
 
         #     minitel.position(1, position_row)
