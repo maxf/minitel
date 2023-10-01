@@ -42,7 +42,7 @@ def ask_gpt(prompt: str) -> str:
         temperature=0,
     )
 
-    return response['choices'][0]['message']['content'].split('\n')
+    return response['choices'][0]['message']['content']
 
 
 # im = Image.open("chatgpt-logo-pixellated-1-to-1.png")
@@ -74,11 +74,11 @@ curses.setupterm(term="vt100")
 
 
 def button(stdscr: Window, row: int, col: int, text: str):
-    stdscr.addstr(col, row, f" {text} ", curses.A_REVERSE)
+    stdscr.addstr(row, col, f" {text} ", curses.A_REVERSE)
     stdscr.refresh()
 
 
-def wait_for(stdscr, keycode):
+def wait_for(stdscr: Window, keycode: str) -> None:
     input: str = ""
     while input != keycode:
         input = stdscr.getkey()
@@ -90,19 +90,18 @@ def require_input(stdscr: Window, row: int, col: int):
     stdscr.addstr(row, col, "........................................")
     stdscr.addstr(row+2, col, strings["send"])
 
-    button(stdscr, col+len(strings["send"]), row+2, 'Envoi')
+    button(stdscr, row+2, col+len(strings["send"]), 'Envoi')
 
     input = ""
     input_pos = col
     while True:
         key: str = stdscr.getkey(row, input_pos)
-        input_pos = input_pos + 1
 
         if key[0:4] == "KEY_":
             continue
         elif key == "\x7f":
             # backspace
-            input_pos = input_pos - 2
+            input_pos = input_pos - 1
             stdscr.addstr(row, input_pos, ".")
             input = input[:-1]
         elif key == "\n":
@@ -110,6 +109,7 @@ def require_input(stdscr: Window, row: int, col: int):
             break
         else:
             # displayable character
+            input_pos = input_pos + 1
             stdscr.addstr(row, input_pos - 1, key)
             input = input + key
 
@@ -190,8 +190,11 @@ def main(stdscr: Window):
     curses.cbreak()  # don't wait for Enter to handle keypresses
 
     stdscr.keypad(True)  # automatically decode special keys into constants
-
     stdscr.clear()
+
+    stdscr.addstr(0, 0, f"rows: {curses.LINES}, cols: {curses.COLS}")
+
+
     stdscr.addstr(2, 1, "3615 GPT")
 
 #    show_logo()
@@ -201,36 +204,44 @@ def main(stdscr: Window):
     stdscr.refresh()
 
     while True:
-        user_input = require_input(stdscr, 22, 1)
+        user_input = require_input(stdscr, curses.LINES - 3, 0)
         stdscr.addstr(0, 0, f"(User typed: {user_input})                   ")
 
         if user_input == "quit":
             return
 
 
-        # out: List[str] = ask_gpt(user_input)
-        out: List[str] = ["Le Minitel (pour « Médium interactif par numérisation d'information téléphonique ») est un type de terminal informatique destiné à la connexion au service français de Vidéotex baptisé Télétel, commercialement exploité en France entre 1980 et 2012. Donnant accès à des services variés préfigurant ceux du futur Internet, et utilisant pour cela le réseau français Transpac qui lui-même préfigurait la future infrastructure de transmission d'Internet, il a hissé la France au premier plan de la télématique mondiale grâce au premier service au monde de fourniture gratuite ou payante d’informations télématiques. Il fut un succès considérable et resta longtemps en usage, y compris en concurrence d’Internet.", "Par métonymie, le mot « Minitel » a fini par désigner l'ensemble du service Vidéotex en France ainsi que les éléments de réseau (concentrateurs, points d'accès) destinés à rendre ce service. "]
+        response: str = ask_gpt(user_input)
+
+
+        # prepare the result for display
+        # 1. replace \n by however much whitespace needed to reach the end
+        # of the line
+        while (i := response.find('\n')) != -1:
+            nb_padding_spaces = curses.COLS - i % curses.COLS
+            response = response.replace("\n", " " * nb_padding_spaces, 1)
+
+
+        # paginate the output
+        nb_chars_per_page = curses.COLS * (curses.LINES - 8)
+        pages =  [ response[i:i + nb_chars_per_page] for i in range(0, len(response), nb_chars_per_page) ]
 
 
         stdscr.clear()
-        stdscr.addstr(0, 1, "3615 GPT")
+        stdscr.addstr(1, 1, "3615 GPT")
         stdscr.addstr(2, 1, strings["tagline"])
 
-        position_row = 6
 
-        for ligne in out:
-            stdscr.addstr(position_row, 1, ligne)
-            position_row = position_row + len(ligne) // 40 + 1
+        for page in pages:
+            stdscr.addstr(6, 0, page)
 
-            if position_row > 21:
-                stdscr.addstr(23, 1, strings["next"])
-                button(stdscr, 24, 3 + len(strings["next"]), 'Suite')
-        #         minitel.curseur(False)
-                wait_for(stdscr, "S")
-                stdscr.clear()
-                stdscr.addstr(1, 1, "3615 GPT")
-                stdscr.addstr(3, 1, strings["tagline"])
-                position_row = 6
+            stdscr.addstr(curses.LINES - 1, 0, strings["next"])
+            button(stdscr, curses.LINES - 1, 3 + len(strings["next"]), 'Suite')
+            wait_for(stdscr, "S")
+            stdscr.clear()
+            stdscr.addstr(0, 1, "3615 GPT")
+            stdscr.addstr(2, 1, strings["tagline"])
+
 
 
         #     minitel.position(1, position_row)
