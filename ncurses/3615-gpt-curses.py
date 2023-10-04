@@ -243,22 +243,4 @@ def main(stdscr: Window):
             stdscr.addstr(2, 1, strings["tagline"])
 
 
-
-        #     minitel.position(1, position_row)
-        #     minitel.debut_ligne()
-
-        #    minitel.envoyer(out)
-
-#        minitel.position(2, 24)
-#        minitel.envoyer(strings["back"])
-#        button(3 + len(strings["back"]),24,'Retour')
-#        minitel.curseur(False)
-#        wait_for(KEY_RETOUR)
-
-# minitel.efface()
-
-
 wrapper(main)
-
-
-# time.sleep(200)
