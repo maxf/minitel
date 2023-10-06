@@ -12,7 +12,7 @@ else:
 clients = []
 
 
-ROWS, COLS = 25, 40
+ROWS, COLS = 24, 40
 blank_canvas = ["." * COLS for _ in range(ROWS)]
 
 def replace_substring_at_index(s: str, new_substring: str, index: int) -> str:

@@ -5,6 +5,8 @@ import curses
 import random
 import string
 import json
+import os
+import locale
 from sprite import Sprite
 
 
@@ -15,7 +17,7 @@ if TYPE_CHECKING:
 else:
     Window = Any
 
-ROWS, COLS = 25, 40
+ROWS, COLS = 24, 40
 
 sprites: List[Sprite] = []
 
@@ -100,21 +102,32 @@ def main(screen) -> None:
         threading.Thread(target=receive_data, args=(s, screen)).start()
 
         try:
+            # counter = 1
             while True:
-                key: str = screen.getkey()
+                ch: int = screen.getch()
+                # screen.addstr(counter, 1, f"{counter}/1: user typed {ch}")
+                # screen.refresh()
+                # counter = counter + 1
 
-                if key == "KEY_DOWN":
-                    cursor_row = min(ROWS-1, cursor_row + 1)
-                elif key == "KEY_UP":
-                    cursor_row = max(0, cursor_row - 1)
-                elif key == "KEY_LEFT":
-                    cursor_col = max(0, cursor_col - 1)
-                elif key == "KEY_RIGHT":
-                    cursor_col = min(COLS-1, cursor_col + 1)
-                elif key[0:4] == "KEY_" or key == "\n":
-                    continue
+                if ch == 27:  # Escape character. E.g. minitel special keys
+                    # Try to get the next characters with a timeout
+                    screen.nodelay(1)  # Non-blocking mode
+                    next_ch = screen.getch()
 
-                elif key in ["\x7f", "\x08"] and cursor_col > 0: # backspace
+                    if next_ch == ord('['):
+                        final_ch = screen.getch()
+                        if final_ch == 66: # key down
+                            cursor_row = min(ROWS-1, cursor_row + 1)
+                        elif final_ch == 65: # key up
+                            cursor_row = max(0, cursor_row - 1)
+                        elif final_ch == 68: # key left
+                            cursor_col = max(0, cursor_col - 1)
+                        elif final_ch == 67: # key right
+                            cursor_col = min(COLS-1, cursor_col + 1)
+                        else:
+                            continue
+                    screen.nodelay(0)  # Back to blocking mode
+                elif ch in [127, 263] and cursor_col > 0: # backspace
                     cursor_col = cursor_col - 1
                     update = {
                         "type": "update",
@@ -126,11 +139,19 @@ def main(screen) -> None:
                     }
                     draw(update, screen)
                     s.sendall(json.dumps(update).encode())
+                elif ch == 258: # key down
+                    cursor_row = min(ROWS-1, cursor_row + 1)
+                elif ch == 259: # key up
+                    cursor_row = max(0, cursor_row - 1)
+                elif ch == 260: # key left
+                    cursor_col = max(0, cursor_col - 1)
+                elif ch == 261: # key right
+                    cursor_col = min(COLS-1, cursor_col + 1)
                 else:
                     # normal character
                     update = {
                         "type": "update",
-                        "text": key,
+                        "text": chr(ch),
                         "row": cursor_row,
                         "col": cursor_col,
                         "client_id": client_id,
@@ -152,11 +173,14 @@ def main(screen) -> None:
 
 if __name__ == "__main__":
 
+    print("Connected to the minitalk server")
+    print(f"terminal type: {os.getenv('TERM')}")
+
     # ask for the user name
     while len(username) == 0:
         username = input("What's your user name? ")
 
-        username = "←" + username # small arrow for the tag
+        username = "<" + username # small arrow for the tag
 
 
     # start the canvas editor
