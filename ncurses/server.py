@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import socketserver
 import json
 from typing_extensions import Dict

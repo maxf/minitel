@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import socket
 import threading
 import curses
@@ -6,7 +7,7 @@ import string
 import json
 from sprite import Sprite
 
-from typing_extensions import Dict
+
 from typing import TYPE_CHECKING, Dict, Any, List
 if TYPE_CHECKING:
     from _curses import _CursesWindow
@@ -94,8 +95,6 @@ def main(screen) -> None:
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
-        screen.addstr("Connected! Press 'q' to quit.\n")
-        screen.refresh()
 
         # Start a thread to listen for incoming data
         threading.Thread(target=receive_data, args=(s, screen)).start()
@@ -115,7 +114,7 @@ def main(screen) -> None:
                 elif key[0:4] == "KEY_" or key == "\n":
                     continue
 
-                elif key == "\x7f" and cursor_col > 0: # backspace
+                elif key in ["\x7f", "\x08"] and cursor_col > 0: # backspace
                     cursor_col = cursor_col - 1
                     update = {
                         "type": "update",
