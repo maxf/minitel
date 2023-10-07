@@ -6,9 +6,8 @@ import random
 import string
 import json
 import os
-import locale
 from sprite import Sprite
-
+from datetime import datetime
 
 from typing import TYPE_CHECKING, Dict, Any, List
 if TYPE_CHECKING:
@@ -17,22 +16,26 @@ if TYPE_CHECKING:
 else:
     Window = Any
 
-ROWS, COLS = 24, 40
-
-sprites: List[Sprite] = []
-
 def random_id(length: int=10):
     return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 
+ROWS, COLS = 24, 40
+cursor_row: int = 0
+cursor_col: int = 0
+client_id: str = random_id()
+username: str = ""
+sprites: List[Sprite] = []
 
 def draw(message: Dict[str, Any], screen: Window):
     if message["type"] == "sync":
         # Draw the entire canvas on the terminal
         # TODO: rewrite so only the non-whitespace is drawn, otherwise it's
         # going to be very slow on old terminals
-        screen.clear()
+        # screen.clear()
         for row, canvas_line in enumerate(message["canvas"]):
             screen.addstr(row, 0, canvas_line)
+
+        screen.move(cursor_row, cursor_col)
     elif message["type"] == "update":
         row = message["row"]
         col = message["col"]
@@ -50,18 +53,11 @@ def draw(message: Dict[str, Any], screen: Window):
                 new_tag.draw(screen)
                 sprites.append(new_tag)
         screen.addstr(row, col, message["text"])
-
+        screen.move(cursor_row, cursor_col)
     else:
         raise Exception(f"Unknown message type: {message['type']}")
-    screen.move(cursor_row, cursor_col)
     screen.refresh()
 
-
-
-cursor_row: int = 0
-cursor_col: int = 0
-client_id: str = random_id()
-username: str = ""
 
 def receive_data(s, screen: Window):
     """
@@ -87,7 +83,7 @@ def receive_data(s, screen: Window):
 def main(screen) -> None:
     curses.cbreak()  # Enable char-by-char input mode
     curses.noecho()  # Don't echo characters back to the screen
-    screen.keypad(1)  # Handle special keystrokes
+    screen.keypad(True)  # Handle special keystrokes
 
     HOST, PORT = "127.0.0.1", 9999
     global cursor_row, cursor_col
@@ -111,7 +107,7 @@ def main(screen) -> None:
 
                 if ch == 27:  # Escape character. E.g. minitel special keys
                     # Try to get the next characters with a timeout
-                    screen.nodelay(1)  # Non-blocking mode
+                    screen.nodelay(True)  # Non-blocking mode
                     next_ch = screen.getch()
 
                     if next_ch == ord('['):
@@ -126,7 +122,7 @@ def main(screen) -> None:
                             cursor_col = min(COLS-1, cursor_col + 1)
                         else:
                             continue
-                    screen.nodelay(0)  # Back to blocking mode
+                    screen.nodelay(False)  # Back to blocking mode
                 elif ch in [127, 263] and cursor_col > 0: # backspace
                     cursor_col = cursor_col - 1
                     update = {
@@ -147,6 +143,8 @@ def main(screen) -> None:
                     cursor_col = max(0, cursor_col - 1)
                 elif ch == 261: # key right
                     cursor_col = min(COLS-1, cursor_col + 1)
+#                elif ch == 11: # control-k, used to clear the canvas
+#                    pass
                 else:
                     # normal character
                     update = {
@@ -175,6 +173,11 @@ if __name__ == "__main__":
 
     print("Connected to the minitalk server")
     print(f"terminal type: {os.getenv('TERM')}")
+
+    print("\nInstructions: ")
+    print("- type to edit the canvas")
+    print("- use arrow keys to move your cursor")
+    print("- use ctrl-k to clear the canvas for all users\n")
 
     # ask for the user name
     while len(username) == 0:

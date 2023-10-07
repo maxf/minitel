@@ -1,26 +1,19 @@
 #!/usr/bin/python
 import socketserver
 import json
-from typing_extensions import Dict
-from typing import TYPE_CHECKING, Dict, Any, List
-if TYPE_CHECKING:
-    from _curses import _CursesWindow
-    Window = _CursesWindow
-else:
-    Window = Any
+from typing import List
 
 clients = []
 
 
 ROWS, COLS = 24, 40
-blank_canvas = ["." * COLS for _ in range(ROWS)]
 
 def replace_substring_at_index(s: str, new_substring: str, index: int) -> str:
     return s[:index] + new_substring + s[index + len(new_substring):]
 
 
 class TextEditorServer(socketserver.BaseRequestHandler):
-    canvas: List[str] = blank_canvas
+    canvas: List[str] = ["." * COLS for _ in range(ROWS)]
 
     def handle(self):
         print(f"Client {self.client_address} connected.")
@@ -34,7 +27,6 @@ class TextEditorServer(socketserver.BaseRequestHandler):
             "canvas": TextEditorServer.canvas
         }
 
-        print(f"New connection: {self.client_address}.")
         self.request.sendall(json.dumps(first_message).encode())
 
         try:
@@ -51,17 +43,27 @@ class TextEditorServer(socketserver.BaseRequestHandler):
                 # { "type": "update", "text": "...", "row": ..., "col": ..., "client_id": "...", "username": "..." }
                 update = json.loads(data)
 
-                # Update the canvas
-                TextEditorServer.canvas[update["row"]] = \
-                    replace_substring_at_index(
-                        TextEditorServer.canvas[update["row"]],
-                        update["text"],
-                        update["col"]
-                    )
+                if update["text"] == "\u000b":
+                    print("received C-k so clearing the canvas")
+                    TextEditorServer.canvas = ["." * COLS for _ in range(ROWS)]
+                    update = {
+                        "type": "sync",
+                        "canvas": TextEditorServer.canvas
+                    }
+                    data = json.dumps(update)
+                else:
+                    TextEditorServer.canvas[update["row"]] = \
+                        replace_substring_at_index(
+                            TextEditorServer.canvas[update["row"]],
+                            update["text"],
+                            update["col"]
+                        )
 
                 # Broadcast received data to other clients
+                print(f"broadcasting {update['type']}")
+                data = json.dumps(update)
                 for client in clients:
-                    if client != self.request:
+                    if update["type"] == "sync" or client != self.request:
                         client.sendall(data.encode())
                         print(f"Sent data to client")
         finally:
