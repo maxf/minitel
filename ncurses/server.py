@@ -41,31 +41,37 @@ class TextEditorServer(socketserver.BaseRequestHandler):
 
                 # We expect from a client:
                 # { "type": "update", "text": "...", "row": ..., "col": ..., "client_id": "...", "username": "..." }
-                update = json.loads(data)
 
-                if update["text"] == "\u000b":
-                    print("received C-k so clearing the canvas")
-                    TextEditorServer.canvas = ["." * COLS for _ in range(ROWS)]
-                    update = {
-                        "type": "sync",
-                        "canvas": TextEditorServer.canvas
-                    }
+                # Sometimes multiple messages are sent together
+                # which means we receive invalid json: {...}{...}
+                split_data = data.replace("}{", "}|{").split('|')
+
+                for d in split_data:
+                    update = json.loads(d)
+
+                    if update["text"] == "\u000b":
+                        print("received C-k so clearing the canvas")
+                        TextEditorServer.canvas = ["." * COLS for _ in range(ROWS)]
+                        update = {
+                            "type": "sync",
+                            "canvas": TextEditorServer.canvas
+                        }
+                        data = json.dumps(update)
+                    else:
+                        TextEditorServer.canvas[update["row"]] = \
+                            replace_substring_at_index(
+                                TextEditorServer.canvas[update["row"]],
+                                update["text"],
+                                update["col"]
+                            )
+
+                    # Broadcast received data to other clients
+                    print(f"broadcasting {update['type']}")
                     data = json.dumps(update)
-                else:
-                    TextEditorServer.canvas[update["row"]] = \
-                        replace_substring_at_index(
-                            TextEditorServer.canvas[update["row"]],
-                            update["text"],
-                            update["col"]
-                        )
-
-                # Broadcast received data to other clients
-                print(f"broadcasting {update['type']}")
-                data = json.dumps(update)
-                for client in clients:
-                    if update["type"] == "sync" or client != self.request:
-                        client.sendall(data.encode())
-                        print(f"Sent data to client")
+                    for client in clients:
+                        if update["type"] == "sync" or client != self.request:
+                            client.sendall(data.encode())
+                            print(f"Sent data to client")
         finally:
             clients.remove(self.request)
             print(f"Client {self.client_address} removed from active clients.")
