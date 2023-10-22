@@ -6,14 +6,23 @@ from typing import List
 clients = []
 
 
-ROWS, COLS = 24, 40
+ROWS, COLS = 24, 79
 
 def replace_substring_at_index(s: str, new_substring: str, index: int) -> str:
     return s[:index] + new_substring + s[index + len(new_substring):]
 
 
+def initial_canvas() -> List[str]:
+    canvas: List[str] = [f" __MINITALK{'_'*(COLS-12)} "]
+    canvas.append(f"/{' '*(COLS-2)}\\")
+    for _ in range(ROWS-3):
+        canvas.append(f"|{' '*(COLS-2)}|")
+    canvas.append(f"\\{'_'*(COLS-2)}/")
+    return canvas
+
+
 class TextEditorServer(socketserver.BaseRequestHandler):
-    canvas: List[str] = ["." * COLS for _ in range(ROWS)]
+    canvas: List[str] = initial_canvas()
 
     def handle(self):
         print(f"Client {self.client_address} connected.")

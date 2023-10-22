@@ -19,12 +19,23 @@ else:
 def random_id(length: int=10):
     return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 
-ROWS, COLS = 24, 40
+ROWS, COLS = 24, 79
 cursor_row: int = 0
 cursor_col: int = 0
 client_id: str = random_id()
 username: str = ""
 sprites: List[Sprite] = []
+
+
+class Log():
+    def __init__(self, filename):
+        self.filename = filename
+        self.file = open(self.filename, "w")
+
+    def info(self, message):
+        self.file.write(message + "\n")
+        self.file.flush()
+
 
 def draw(message: Dict[str, Any], screen: Window):
     if message["type"] == "sync":
@@ -134,6 +145,7 @@ def main(screen) -> None:
                         "username": username
                     }
                     draw(update, screen)
+                    log.info(f"1. send the update to the server: {json.dumps(update)}")
                     s.sendall(json.dumps(update).encode())
                 elif ch == 258: # key down
                     cursor_row = min(ROWS-1, cursor_row + 1)
@@ -159,6 +171,7 @@ def main(screen) -> None:
                     # draw on this terminal
                     draw(update, screen)
                     # send the update to the server
+                    log.info(f"2. send the update to the server: {json.dumps(update)}")
                     s.sendall(json.dumps(update).encode())
                 screen.move(cursor_row, cursor_col)
 
@@ -169,15 +182,26 @@ def main(screen) -> None:
             screen.getch()  # Wait for another key press before exiting
 
 
+
 if __name__ == "__main__":
 
+    log = Log("/tmp/minitalk.log")
+    log.info("Minitel client starting")
+
     print("Connected to the minitalk server")
+    print(f"Logging at {log.filename}")
     print(f"terminal type: {os.getenv('TERM')}")
 
     print("\nInstructions: ")
     print("- type to edit the canvas")
     print("- use arrow keys to move your cursor")
     print("- use ctrl-k to clear the canvas for all users\n")
+    # print("!\"#$%;'()*+,-./0123456789:;=?@")
+    # print("ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]")
+    # print("^_`abcdefghijklmnopqrstuvwxyz{|}~")
+    # print("±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊ")
+    # print("ËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêë")
+    # print("ìíîïðñòóôõö÷øùúûüýþÿ")
 
     # ask for the user name
     while len(username) == 0:
