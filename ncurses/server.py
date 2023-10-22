@@ -60,7 +60,7 @@ class TextEditorServer(socketserver.BaseRequestHandler):
 
                     if update["text"] == "\u000b":
                         print("received C-k so clearing the canvas")
-                        TextEditorServer.canvas = ["." * COLS for _ in range(ROWS)]
+                        TextEditorServer.canvas = initial_canvas()
                         update = {
                             "type": "sync",
                             "canvas": TextEditorServer.canvas

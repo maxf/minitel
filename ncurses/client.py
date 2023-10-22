@@ -38,14 +38,13 @@ class Log():
 
 
 def draw(message: Dict[str, Any], screen: Window):
+    global cursor_col, cursor_row
     if message["type"] == "sync":
         # Draw the entire canvas on the terminal
-        # TODO: rewrite so only the non-whitespace is drawn, otherwise it's
-        # going to be very slow on old terminals
-        # screen.clear()
         for row, canvas_line in enumerate(message["canvas"]):
             screen.addstr(row, 0, canvas_line)
-
+        cursor_row = 2
+        cursor_col = 2
         screen.move(cursor_row, cursor_col)
     elif message["type"] == "update":
         row = message["row"]
