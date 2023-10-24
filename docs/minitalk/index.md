@@ -2,12 +2,8 @@
 
 by MaxF ([github](https://github.com/maxf/), [mastodon](https://mastodon.social/@maxf), max@e97.me)
 
-- [demo](#demo)
 - Code: [maxf/minitel](https://github.com/maxf/minitel)
-
-
-
-<p align="center"><img src="./talk-minitel.jpg" width="50%" alt="picture of a minitel side by side with a laptop, both running minitalk"/></p>
+- [Instructions](https://github.com/maxf/minitel/blob/main/minitalk/README.md)
 
 
 After [3615 GPT](..), conversations with [danbri](https://github.com/danbri) led me to want to implement some sort of chat system that could let a Minitel user chat with another Minitel. I'll spare the reader all the considerations and decisions that went into this and will just outline the way I did it.
